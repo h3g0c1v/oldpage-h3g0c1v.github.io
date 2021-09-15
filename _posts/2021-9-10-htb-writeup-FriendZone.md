@@ -26,11 +26,10 @@ tags:
 
 ![](/assets/images/htb-writeup-friendzone/friendzone_logo.png)
 
+# Reconocimiento
 Esta maquina me gusto bastante porque los ataques de transferencia de zona son mis favoritos. Despues de destriparos la maquina voy a a proceder a explicarosla. FriendZone es una maquina Linux con una dificultad en Hack de Box Easy
 
-## Reconocimiento
-
-Primero vamos a realizar un reconocimiento de puerto por el protocolo **TCP**, y el output vamos a meterlo en el archivo `allPorts`, por si acaso se nos olvida tener siempre la informacion apuntada.
+Primero vamos a realizar un reconocimiento de puertos por el protocolo **TCP**, y el output vamos a meterlo en el archivo `allPorts`, por si acaso se nos olvida tener siempre la informacion apuntada.
 
 ```bash
 
