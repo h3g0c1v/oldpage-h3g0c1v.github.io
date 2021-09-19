@@ -61,7 +61,7 @@ PORT    STATE SERVICE
 
 ```
 
-Después de esto, extraeremos los puertos, con la utilidad que tengo previamente definida en la `.zshrc`. Dicha herramienta esta creada por s4vitar.
+Después de esto, extraeremos los puertos, con la utilidad que tengo previamente definida en la `.zshrc`. Dicha herramienta está creada por s4vitar.
 
 
 ```bash
@@ -138,7 +138,7 @@ Host script results:
 |_  start_date: N/A
 
 ```
-Antes que nada vamos a ver que nos dice el `whatweb` para saber que son esos puertos 80 y 443 que estan abiertos
+Antes que nada vamos a ver que nos dice el `whatweb` para saber que son esos puertos 80 y 443 que están abiertos
 
 ```bash
 h3g0c1v@kali:~/htb/friendzone$ whatweb http://10.10.10.123
@@ -177,7 +177,7 @@ Cuando entramos en el dominio vemos lo siguiente.
 
 ![](/assets/images/htb-writeup-friendzone/good.png)
 
-Como veo nos estan troleando un poquito, ahora van a ver.
+Como veo nos están troleando un poquito, ahora van a ver.
 
 He visto un dominio, entonces se me ocurre hacer un **ataque de transferencia de zona** con al utilidad **dig** utilizando el parametro axfr
 
@@ -261,7 +261,7 @@ h3g0c1v@kali:~/htb/friendzone$ smbmap -H 10.10.10.123
 
 
 ```
-Vemos que en `Files` la ruta en la que esta almacenado los archivos es `/etc/Files`, entonces intuyo que los demas recursos seran igual.
+Vemos que en `Files` la ruta en la que está almacenado los archivos es `/etc/Files`, entonces intuyo que los demas recursos seran igual.
 
 En los recursos compartidos **general** y **Development** podemos entrar asi que vamos a ver que tienen.
 

