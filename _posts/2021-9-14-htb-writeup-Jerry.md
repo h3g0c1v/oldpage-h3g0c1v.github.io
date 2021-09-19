@@ -1,7 +1,7 @@
 ---
 layout: single
 title: Jerry - Hack The Box
-excerpt: "Esta maquina es bastante facililla, vamos a explotar un Tomcat aprovechandonos de un upload en una pagina, aunque primero necesitamos credenciales validas. Asi que vamos a ello."
+excerpt: "Ésta máquina es bastante facililla. Vamos a explotar un Tomcat aprovechandonos de un upload de la página, aunque primero necesitaremos credenciales válidas. Asá que vamos a ello."
 date: 2021-9-14
 classes: wide
 header:
@@ -23,7 +23,7 @@ tags:
 
 # Reconocimiento
 
-Primero vamos a realizar como siempre un reconocimiento de puertos por el protocolo **TCP**, y el output lo redirigiremos al archivo `allPorts`
+Primero vamos a realizar como siempre un reconocimiento de puertos por el protocolo **TCP** , y el output lo redirigiremos al archivo `allPorts`
 
 ```bash
 
@@ -46,8 +46,8 @@ PORT     STATE SERVICE    REASON
 
 ```
 
-Y vemos que solo tiene un puerto abierto, que es el puerto 8080.
-Antes de ver que nos dice el whatweb vamos a ejecutar una herramienta llamada `extractPorts` que yo tengo previamente definidad en la `.zshrc`. Dicha herramienta esta creada por s4vitar
+Vemos que solo tiene un puerto abierto, que es el puerto 8080.
+Antes de ver que nos dice el **whatweb** , vamos a ejecutar una herramienta llamada `extractPorts` , que yo tengo previamente definida en la `.zshrc`. Dicha herramienta está creada por s4vitar
 
 ```bash
 
@@ -67,7 +67,7 @@ extractPorts allPorts
 
 ```
 
-Y vamos a detectar la version y servicios que corren para el puerto 8080.
+Y vamos a detectar la versión y servicio que corren para el puerto 8080.
 
 ```bash
 
@@ -84,7 +84,7 @@ PORT     STATE SERVICE VERSION
 
 ```
 
-Muy bien nos reporta un poco mas de informaciond. Aun asi, veamos que nos dice el whatweb.
+Muy bien, nos reporta un poco más de informacion. Aun asi, veamos que nos dice el **whatweb** .
 
 ```bash
 
@@ -92,27 +92,27 @@ h3g0c1v@kali:~/htb/jerry$ whatweb http://10.10.10.95:8080
 http://10.10.10.95:8080 [200 OK] Apache, Country[RESERVED][ZZ], HTML5, HTTPServer[Apache-Coyote/1.1], IP[10.10.10.95], Title[Apache Tomcat/7.0.88]
 
 ```
-# Consiguiendo Acceso a la Maquina
+# Consiguiendo Acceso a la Máquina
 
 Genial, veamos que contiene ese servidor web Tomcat
 
 ![](/assets/images/htb-writeup-Jerry/Tomcat_page.png)
 
-Y nos aparece lo siguiente. Muy bien a mi se me ocurre mirar a ver si tiene un panel login la pagina web. La ruta en la que normalmente esta almacenado el panel login en Tomcat es `/manager/html`, asi que vamos a probar.
+Y nos aparece lo siguiente. Puedo probar a ver si tiene un **panel login** la pagina web. La ruta en la que normalmente está almacenado el panel login en Tomcat es `/manager/html`, asi que vamos a probar.
 
 ![](/assets/images/htb-writeup-Jerry/tomcat_page.png)
 
-Vamos a probar con las credenciales tipicas de **admin** **admin**. ¡Y vemos las credenciales! ¡Por que si! Que raro es esto, pero la hemos encontrado
+Vamos a probar con las credenciales típicas de **admin** , **admin**. ¡Y vemos las credenciales! ¡Por que sí! Que raro es esto, pero la hemos encontrado.
 
 ![](/assets/images/htb-writeup-Jerry/credentials.png)
 
-Bueno pues nos logeamos con las credenciales y vemos lo siguiente
+Bueno pues nos **logeamos** con las credenciales y vemos lo siguiente.
 
 ![](/assets/images/htb-writeup-Jerry/dentro_tomcat.png)
 
 Por abajo veo que hay un **upload** de archivos `.war` por lo que voy a intentar meter una revershell, para intentar ganar acceso al sistema.
 
-Y para ello utilizaremos **msfvenom** para utilizar la reveshell hecha con **java** llamada `java/jsp_shell_reverse_tcp`.
+Y para ello utilizaremos **msfvenom** , e utilizar la reveshell hecha en **java** llamada `java/jsp_shell_reverse_tcp`.
 
 ```bash
 
@@ -122,11 +122,11 @@ Final size of war file: 1090 bytes
 
 ```
 
-Ahora metemos el archivo `.war` en la pagina web, para que nos cree otro modulo.
+Ahora metemos el archivo `.war` en la pagina web, para que se nos cree otro módulo.
 
 ![](/assets/images/htb-writeup-Jerry/revershell.png)
 
-Y una vez metido el archivo en la maquina nos ponemos en escucha por el puerto **443**, para ver si es vulnerable.
+Y una vez metido el archivo en la máquina, nos ponemos en escucha por el puerto **443** , para ver si es vulnerable.
 
 ```bash
 
@@ -142,7 +142,7 @@ C:\apache-tomcat-7.0.88>
 ```
 # Visualizando las Flags
 
-¡Y si! Es vulnerable y ya hemos ganado acceso al sistema, incluso lo hemos hecho como `nt authority\system`.
+¡Y si! Es vulnerable. Hemos ganado acceso al sistema, incluso lo hemos hecho como `nt authority\system`.
 
 ```bash
 
@@ -152,7 +152,7 @@ nt authority\system
 
 ```
 
-Asi que ya hemos comprometido la maquina **Windows Jerry** y podemos ver las flags de **user.txt** y **root.txt**.
+En este punto ya hemos comprometido la máquina y podemos ver las flags de **user.txt** y **root.txt** .
 
 ```
 C:\Users\Administrator\Desktop\flags>type "2 for the price of 1.txt"
