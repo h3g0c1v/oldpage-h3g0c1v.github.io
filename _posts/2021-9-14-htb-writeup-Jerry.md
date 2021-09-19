@@ -140,7 +140,7 @@ C:\apache-tomcat-7.0.88>
 
 
 ```
-#Visualizando las Flags
+# Visualizando las Flags
 
 ¡Y si! Es vulnerable y ya hemos ganado acceso al sistema, incluso lo hemos hecho como `nt authority\system`.
 
