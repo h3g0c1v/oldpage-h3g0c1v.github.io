@@ -23,7 +23,7 @@ tags:
 
 # Reconocimiento
 
-Primero vamos a realizar como siempre un reconocimiento de puertos por el protocolo **TCP** , y el output lo redirigiremos al archivo `allPorts`
+Primero vamos a comenzar realizando, como siempre, un reconocimiento de puertos por el protocolo **TCP** , y el output lo redirigiremos al archivo `allPorts`.
 
 ```bash
 
@@ -47,27 +47,8 @@ PORT     STATE SERVICE    REASON
 ```
 
 Vemos que solo tiene un puerto abierto, que es el puerto 8080.
-Antes de ver que nos dice el **whatweb** , vamos a ejecutar una herramienta llamada `extractPorts` , que yo tengo previamente definida en la `.zshrc`. Dicha herramienta está creada por s4vitar
 
-```bash
-
-extractPorts allPorts 
-───────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-       │ File: extractPorts.tmp
-───────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-   1   │ 
-   2   │ [*] Extracting information...
-   3   │ 
-   4   │     [*] IP Address: 10.10.10.95
-   5   │     [*] Open ports: 8080
-   6   │ 
-   7   │ [*] Ports copied to clipboard
-   8   │ 
-───────┴─────────────────────────────────────────────────────────────────
-
-```
-
-Y vamos a detectar la versión y servicio que corren para el puerto 8080.
+Pues vamos a detectar la versión y servicio que corren para ese puerto.
 
 ```bash
 
@@ -94,7 +75,7 @@ http://10.10.10.95:8080 [200 OK] Apache, Country[RESERVED][ZZ], HTML5, HTTPServe
 ```
 # Consiguiendo Acceso a la Máquina
 
-Genial, veamos que contiene ese servidor web Tomcat
+Bien, veamos que contiene ese servidor Tomcat.
 
 ![](/assets/images/htb-writeup-Jerry/Tomcat_page.png)
 

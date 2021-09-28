@@ -24,7 +24,7 @@ tags:
 
 # Reconocimiento
 
-Primero vamos a realizar un reconocimiento de puertos por el protocolo **TCP**, y el output lo redigiremos al archivo `allPorts`
+Primero, vamos a comenzar realizando un reconocimiento de puertos por el protocolo **TCP**, y el output lo redigiremos al archivo `allPorts`.
 
 ```bash
 
@@ -90,25 +90,7 @@ PORT      STATE SERVICE
 
 ```
 
-Bueno hay un monton de puertos abiertos, por lo que vamos a extraer los puertos con la utilidad que tengo previamente definida en la `.zshrc`. Dicha utilidad está creada por s4vitar
-
-```bash
-h3g0c1v@kali:~/htb/active$ extractPorts allPorts
-───────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-       │ File: extractPorts.tmp
-───────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-   1   │ 
-   2   │ [*] Extracting information...
-   3   │ 
-   4   │     [*] IP Address: 10.10.10.100
-   5   │     [*] Open ports: 53,88,135,139,389,445,464,593,636,3268,3269,5722,9389,47001,49152,49153,49154,49155,49157,49158,49169,49172,49182
-   6   │ 
-   7   │ [*] Ports copied to clipboard
-   8   │ 
-───────┴───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-```
-
-Perfecto ahora vamos a ver la versión y servicio que corren bajo los **puertos abiertos**, y el output lo redigiremos al archivo `targeted`.
+Bueno hay un monton de puertos, asi que vamos a ver la versión y servicio que corren bajo esos **puertos** y el output lo redigiremos al archivo `targeted`.
 
 ```bash
 h3g0c1v@kali:~/htb/active$ nmap -sCV -p53,88,135,139,389,445,464,593,636,3268,3269,5722,9389,47001,49152,49153,49154,49155,49157,49158,49169,49172,49182 10.10.10.100 -oN targeted  
@@ -158,7 +140,7 @@ Host script results:
 
 ```
 
-Bien como veo que el puerto **88** está abierto, voy a ver con **crackmapexec** a ver que nos dice.
+Bien, como veo que **kerberos** , que es el puerto **88** , está abierto, voy a ver con **crackmapexec** a ver que nos dice.
 
 ```bash
 h3g0c1v@kali:~/htb/active$ crackmapexec smb 10.10.10.100                                         
@@ -259,7 +241,7 @@ h3g0c1v@kali:~/htb/active$ smbmap -H 10.10.10.100 -r Replication/active.htb
 
 Ahora se pone mas interesante. 
 
-Ésta estructura de archivos se parece a un **sysvol** ,  por lo que hay que buscar un archivo `groups.xml`, porque ahí se suelen almacenar credenciales **hasheadas**. Vamos a ver si lo hay.
+Esta estructura de archivos se parece a un **sysvol** ,  por lo que hay que buscar un archivo `groups.xml`, porque ahí se suelen almacenar credenciales **hasheadas**. Vamos a ver si lo hay.
 
 ```bash
 h3g0c1v@kali:~/htb/active$ smbmap -H 10.10.10.100 -r Replication/active.htb/Policies/{31B2F340-016D-11D2-945F-00C04FB984F9}/MACHINE/Preferences/Groups
@@ -411,7 +393,6 @@ C:\Windows\system32>
 
 Ahora podemos visualizar las dos flags, tanto la `user.txt` como la `root.txt`.
 
-
 Así que primero vamos a ver la `user.txt`.
 
 ```bash
@@ -421,7 +402,7 @@ C:\Users\SVC_TGS\Desktop>type user.txt
 
 ```
 
-Y la `root.txt`
+Y la `root.txt`.
 
 ```bash
 

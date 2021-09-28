@@ -28,7 +28,7 @@ tags:
 
 # Reconocimiento
 
-Primero, vamos a realizar un reconocimiento de puertos por el protocolo **TCP**, y el output vamos a meterlo en el archivo `allPorts`, por si acaso se nos olvida, tener siempre la información apuntada.
+Primero, vamos a comenzar con un reconocimiento de puertos por el protocolo **TCP**, y el output vamos a meterlo en el archivo `allPorts`, por si acaso se nos olvida, tener siempre la información apuntada.
 
 ```bash
 
@@ -61,27 +61,7 @@ PORT    STATE SERVICE
 
 ```
 
-Después de esto, extraeremos los puertos, con la utilidad que tengo previamente definida en la `.zshrc`. Dicha herramienta está creada por s4vitar.
-
-
-```bash
-
-h3g0c1v@kali:~/htb/friendzone$ extractPorts allPorts
-───────┬───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-       │ File: extractPorts.tmp
-───────┼───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-   1   │ 
-   2   │ [*] Extracting information...
-   3   │ 
-   4   │     [*] IP Address: 10.10.10.123
-   5   │     [*] Open ports: 21,22,53,80,139,443,445
-   6   │ 
-   7   │ [*] Ports copied to clipboard
-   8   │ 
-
-```
-
-Ahora detectaremos la **versión** y **servicio** que corren bajo los puertos abiertos, y el output lo meteremos en el archivo `targeted`.
+Despues detectaremos la **versión** y **servicio** que corren bajo los puertos abiertos, y el output lo meteremos en el archivo `targeted`.
 
 ```bash
 h3g0c1v@kali:~/htb/friendzone$ nmap -sC -sV -p21,22,53,80,139,443,445 10.10.10.123 -oN targeted
@@ -138,7 +118,7 @@ Host script results:
 |_  start_date: N/A
 
 ```
-Antes que nada vamos a ver que nos dice el `whatweb` para saber que son esos puertos 80 y 443 que están abiertos
+Y ahora vamos a ver que nos dice el `whatweb` para saber que son esos puertos 80 y 443 que están abiertos.
 
 ```bash
 h3g0c1v@kali:~/htb/friendzone$ whatweb http://10.10.10.123
@@ -153,7 +133,7 @@ https://10.10.10.123 [404 Not Found] Apache[2.4.29], Country[RESERVED][ZZ], HTTP
 
 ```
 
-Y vemos que en el puerto 80, hay un dominio que parece interesante, asi que lo vamos a introducir en el `/etc/hosts` 
+Vemos que en el puerto 80, hay un dominio que parece interesante, asi que lo vamos a introducir en el `/etc/hosts`.
 
 ```bash
 
@@ -179,7 +159,7 @@ Cuando entramos en el dominio vemos lo siguiente.
 
 Como veo nos están troleando un poquito, ahora van a ver.
 
-He visto un dominio, entonces se me ocurre hacer un **ataque de transferencia de zona** con al utilidad **dig** utilizando el parametro axfr
+He visto un dominio, entonces se me ocurre hacer un **ataque de transferencia de zona** con al utilidad **dig** utilizando el parametro `axfr` .
 
 ```bash
 
@@ -203,7 +183,7 @@ friendzone.red.		604800	IN	SOA	localhost. root.localhost. 2 604800 86400 2419200
 
 ```
 
-Ahora si que se pone un poco mas interesante. Descubrimos nuevos dominios, los cuales introducimos en el archivo `/etc/hosts`
+Ahora si que se pone un poco mas interesante. Descubrimos nuevos dominios, los cuales introducimos en el archivo `/etc/hosts`.
 
 ```bash
 
@@ -222,6 +202,7 @@ Ahora si que se pone un poco mas interesante. Descubrimos nuevos dominios, los c
 ```
 
 Me huele muy bien ese administrator1.friendzone.red. asi que lo vamos a abrir.
+
 Nos encontramos con un **login**, asi que habrá que buscar credenciales válidas.
 
 ![](/assets/images/htb-writeup-friendzone/login.png)
@@ -230,7 +211,7 @@ Nos encontramos con un **login**, asi que habrá que buscar credenciales válida
 
 Bien, vamos a probar con Samba. 
 
-Primero vamos a ver los recursos compartidos a nivel de red
+Primero vamos a ver los recursos compartidos a nivel de red.
 
 ```bash
 h3g0c1v@kali:~/htb/friendzone$ smbclient -L 10.10.10.123 -N
@@ -352,7 +333,7 @@ bash: no job control in this shell
 
 ```
 
-Pero, primero hacemos un tratamiento de la **tty** , para poder navegar mejor por la terminal y le indicamos como tipo de terminal una **xterm**
+Pero, primero hacemos un tratamiento de la **tty** , para poder navegar mejor por la terminal y le indicamos como tipo de terminal una **xterm** .
 
 ```bash
 www-data@FriendZone:/home$ script /dev/null -c bash
@@ -369,7 +350,7 @@ Terminal type? xterm
 
 ```
 
-Exportamos la variable **TERM** y la variable **SHELL**
+Exportamos la variable **TERM** y la variable **SHELL**.
 
 
 ```bash
@@ -479,6 +460,7 @@ root
 ```
 
 Y genial! Hemos **comprometido** la máquina, y **escalado privilegios**.
+
 Ahora podemos ir al directorio `/root` y visualizar la **flag** de **root** .
 
 ```bash
