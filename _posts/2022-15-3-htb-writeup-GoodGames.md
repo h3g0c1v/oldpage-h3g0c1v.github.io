@@ -21,7 +21,9 @@ tags:
 
 ![](/assets/images/htb-writeup-GoodGames/GoodGames_logo.png)
 
+
 # Reconocimiento
+
 
 Comenzaremos con un reconocimiento basico del sistema al que nos estamos enfrentando, por lo que utilizaremos la herramienta **nmap**, para escanear todo el rango de puertos por **TCP**. La captura la meteremos en un fichero llamado `allPorts` en formato grepeable.
 
@@ -106,6 +108,9 @@ Vemos que arriba a la derecha hay un icono como de logueo, asi que pincharemos e
 
 ![](/assets/images/htb-writeup-GoodGames/signin.png)
 
+# SQL Injection
+
+
 Voy a intentar un SQL Injection, por lo que para capturar la **data** que se envía usare la herramienta **BurpSuite**.
 
 ![](/assets/images/htb-writeup-GoodGames/burpCAP.png)
@@ -127,6 +132,9 @@ Por ultimo ya dumpearemos las credenciales del administrador y los usuarios que 
 
 ![](/assets/images/htb-writeup-GoodGames/dumpAdmin.png)
 
+
+# Cracking
+
 Ahora que tenemos el hash, intentaremos crackearlo con el uso de **raimbowtables**.
 
 ![](/assets/images/htb-writeup-GoodGames/crackhash.png)
@@ -134,6 +142,10 @@ Ahora que tenemos el hash, intentaremos crackearlo con el uso de **raimbowtables
 Y la tenemos, asi que nos loguearemos como administrador de la página.
 
 ![](/assets/images/htb-writeup-GoodGames/adminlogin.png)
+
+
+# SSTI
+
 
 Ahora que estamos como **Administrador** nos aparece un icono como de ajustes, asi que vamos a pinchar a ver donde nos lleva.
 
@@ -160,6 +172,10 @@ Y parece que si podemos. En este punto voy a ver si puedo ver archivos de la má
 ¡Podemos!, ahora solo queda ver si tenemos ejecución remota de comandos.
 
 ![](/assets/images/htb-writeup-GoodGames/rcessti.png)
+
+
+# Ganando Acceso a la Máquina Víctima
+
 
 ¡Genial!, observamos que tenemos **RCE** , asi que me entablare una **reverse shell** a mi equipo.
 
@@ -233,6 +249,10 @@ augustus@GoodGames:~$ hostname -I
 ```
 
 Y genial, se ve que han reutilizado credenciales, por lo que nos hemos conseguido loguear como **augustus**.
+
+
+# Root
+
 
 En este punto ya que tenemos un contenedor **rooteado** podemos copia la `/bin/bash` al directorio de **augustus** y establecerle permisos **SUID**.
 
