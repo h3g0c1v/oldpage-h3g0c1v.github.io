@@ -2,7 +2,7 @@
 layout: single
 title: Jerry - Hack The Box
 excerpt: "Ésta máquina es bastante facililla. Vamos a explotar un Tomcat aprovechandonos de un upload de la página, aunque primero necesitaremos credenciales válidas. Asá que vamos a ello."
-date: 2021-9-14
+date: 2021-09-14
 classes: wide
 header:
   teaser: /assets/images/htb-writeup-Jerry/Jerry_logo.png

@@ -2,7 +2,7 @@
 layout: single
 title: Active - Hack The Box
 excerpt: "Ésta máquina tiene una dificultad en Hack The Box de Easy. Es una máquina Windows, domain controler, bastante facililla, así que vamos a ello"
-date: 2021-9-19
+date: 2021-09-19
 classes: wide
 header:
   teaser: /assets/images/htb-writeup-active/active_logo.png
