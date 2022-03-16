@@ -1,7 +1,7 @@
 ---
 layout: single
 title: GoodGames - Hack The Box
-excerpt: "Ésta maquina me ha gustado bastante, ya que toca algunos temas bastante chulos. En la máquina GoodGames veremos SQL Injection, Hash Cracking, un bonito Server Side Template Injection e incluso un poco de pivoting, asi que vamos al lío."
+excerpt: "Ésta maquina me ha gustado bastante, ya que toca algunos temas bastante chulos. En la máquina GoodGames veremos SQL Injection, Hash Cracking, un bonito Server Side Template Injection e incluso un poco de pivoting, así que vamos al lío."
 date: 2022-03-15
 classes: wide
 header:
@@ -25,7 +25,7 @@ tags:
 # Reconocimiento
 
 
-Comenzaremos con un reconocimiento basico del sistema al que nos estamos enfrentando, por lo que utilizaremos la herramienta **nmap**, para escanear todo el rango de puertos por **TCP**. La captura la meteremos en un fichero llamado `allPorts` en formato grepeable.
+Comenzaremos con un reconocimiento básico del sistema al que nos estamos enfrentando, por lo que utilizaremos la herramienta **nmap**, para escanear todo el rango de puertos por **TCP**. La captura la meteremos en un fichero llamado `allPorts` en formato grepeable.
 
 ```bash
 
@@ -50,7 +50,7 @@ Nmap done: 1 IP address (1 host up) scanned in 10.22 seconds
 
 ```
 
-Y vemos que tiene el puerto **80** abierto. Después le lanzare unos scripts basicos de enumeracion y detectaremos la version y servicio para dicho puerto, donde el output lo metere en el fichero `targeted`.
+Y vemos que tiene el puerto **80** abierto. Le lanzaré unos scripts básicos de enumeración y detectaremos la versión y servicio para dicho puerto, donde el output lo meteré en el fichero `targeted`.
 
 ```bash
 
@@ -69,7 +69,7 @@ Nmap done: 1 IP address (1 host up) scanned in 7.81 seconds
 
 
 ```
-Vemos que hay un dominio, por lo que lo añadire al fichero `/etc/hosts/` para que resuelva a la máquina víctima.
+Vemos que hay un dominio, por lo que lo añadiré al fichero `/etc/hosts/` para que resuelva a la máquina víctima.
 
 ```bash
 
@@ -87,7 +87,7 @@ ff02::2 ip6-allrouters
 
 ```
 
-Seguiremos con el reconocimiento del puerto 80 y, con la herramienta **whatweb**, inspeccionaremos un poco mas la página.
+Seguiremos con el reconocimiento del puerto 80 y, con la herramienta **whatweb**, inspeccionaremos un poco más la página.
 
 ```bash
 
@@ -102,44 +102,44 @@ En este punto vamos a visitar la página web tanto con la **IP** , como con el *
 
 ![](/assets/images/htb-writeup-GoodGames/webdomain.png)
 
-Y bueno, vemos que no hay diferencia alguna, por lo que me quedare con la **IP**.
+Y bueno, vemos que no hay diferencia alguna, por lo que me quedaré con la **IP**.
 
-Vemos que arriba a la derecha hay un icono como de logueo, asi que pincharemos en él a ver si nos podemos loguear.
+Arriba a la derecha hay un icono como de inicio de sesión, así que pincharemos en él a ver si podemos iniciar sesión o crear una cuenta.
 
 ![](/assets/images/htb-writeup-GoodGames/signin.png)
 
 # SQL Injection
 
 
-Voy a intentar un SQL Injection, por lo que para capturar la **data** que se envía usare la herramienta **BurpSuite**.
+En este campo, voy a intentar una inyección SQL, por lo que para capturar la **data** que se envía usaré la herramienta **BurpSuite**.
 
 ![](/assets/images/htb-writeup-GoodGames/burpCAP.png)
 
-Intentare una simple inyección SQL: `' or 1=1-- -`.
+Intentaré una simple inyección SQL: `' or 1=1-- -`.
 
 ![](/assets/images/htb-writeup-GoodGames/burpSQLI.png)
 
-Y ¡ojo! vemos que es vulnerable a inyecciones SQL, asi que dumpeare la base de datos, para pillar el **hash** de la cuenta del **adminsitrador**.
+Y ¡ojo!, vemos que es vulnerable a inyecciones SQL, ya que al enviar la consulta hemos iniciado sesión como **admin** , y hemos  **baypasseado** el panel de inicio de sesión . Así que dumpearé la base de datos, para pillar el **hash** de la cuenta del **administrador**.
 
-Para ello realizare las siguientes inyecciones.
+Para ello realizaré las siguientes inyecciones.
 
 	- email=' union select 1,2,3,4-- -&password=cds -> Ver el campo al que se muestra por pantalla.
 	- email=' union select 1,2,3,database()-- -&password=cds -> Ver la base de datos en uso.
 	- email=' union select 1,2,3,(table_name) from information_schema.tables where table_schema="main"-- -&password=cds -> Ver las tablas de la base de datos **main**.
 	- email=' union select 1,2,3,(column_name) from information_schema.columns where table_schema="main" and table_name="user"-- -&password=cds -> Ver las columnas que hay en la base de datos **main** cuya tabla se llama **user**.
 
-Por ultimo ya dumpearemos las credenciales del administrador y los usuarios que dispone la base de datos.
+Por último dumpearemos las credenciales del administrador y los usuarios que dispone la base de datos.
 
 ![](/assets/images/htb-writeup-GoodGames/dumpAdmin.png)
 
 
 # Cracking
 
-Ahora que tenemos el hash, intentaremos crackearlo con el uso de **raimbowtables**.
+Ahora que tenemos el hash, lo crackearemos con el uso de **rainbowtables**.
 
 ![](/assets/images/htb-writeup-GoodGames/crackhash.png)
 
-Y la tenemos, asi que nos loguearemos como administrador de la página.
+Y la tenemos, así que iniciaremos sesión como administrador de la página.
 
 ![](/assets/images/htb-writeup-GoodGames/adminlogin.png)
 
@@ -147,25 +147,25 @@ Y la tenemos, asi que nos loguearemos como administrador de la página.
 # SSTI
 
 
-Ahora que estamos como **Administrador** nos aparece un icono como de ajustes, asi que vamos a pinchar a ver donde nos lleva.
+Ahora que estamos como **Administrador** nos aparece un icono de administración, así que vamos a pinchar a ver donde nos lleva.
 
 ![](/assets/images/htb-writeup-GoodGames/settingsadmin.png)
 
-Y vemos que nos lleva a un dominio que no teniamos: *internal-administration.goodgames.htb*, asi que lo añadiré a mi `/etc/hosts/` y volvere a intentar meterme.
+Y vemos que nos lleva a un dominio que no teníamos: *internal-administration.goodgames.htb*, así que lo añadiré a mi `/etc/hosts/` y volveré a intentar meterme.
 
 ![](/assets/images/htb-writeup-GoodGames/adminpanel.png)
 
-Si intentamos loguearnos con alguna credencial tipica, encontraremos que el usuario **admin** y la contraseña **superadministrator** son válidas.
+Si hacemos un poco de *password guessing* nos encontraremos que para usuario **admin** la contraseña **superadministrator** es válida.
 
 ![](/assets/images/htb-writeup-GoodGames/loginadminpanel.png)
 
-Ahora que estamos dentro del panel de administración voy a ver que dice el **wappalizer** . Lo mas interesante que nos dice es que esta corriendo **Flask** por detras, asi que voy a ver si puedo realizar un **Server Side Template Injection (SSTI)**.
+Estamos dentro del panel, así que voy a ver que dice el **wappalizer** . Lo más interesante que nos dice es que está corriendo **Flask** por detrás, así que voy a ver si puedo realizar un **Server Side Template Injection**.
 
-Si buscamos un poco mas por la página, veremos que podemos cambiar el nombre del usuario. Aquí es donde intentare realizar un **SSTI**.
+Si buscamos un poco más por la página, veremos que podemos cambiar el nombre del usuario. Aquí es donde intentaré efectuar el **SSTI**.
 
 ![](/assets/images/htb-writeup-GoodGames/ssti.png)
 
-Y parece que si podemos. En este punto voy a ver si puedo ver archivos de la máquina víctima.
+Y parece que es vulnerable. En este punto voy a ver si puedo ver archivos de la máquina víctima.
 
 ![](/assets/images/htb-writeup-GoodGames/lfissti.png)
 
@@ -177,7 +177,7 @@ Y parece que si podemos. En este punto voy a ver si puedo ver archivos de la má
 # Ganando Acceso a la Máquina Víctima
 
 
-¡Genial!, observamos que tenemos **RCE** , asi que me entablare una **reverse shell** a mi equipo.
+Observamos que tenemos **RCE** , así que me entablaré una **reverse shell** a mi equipo.
 
 ![](/assets/images/htb-writeup-GoodGames/reverseshell.png)
 
@@ -198,7 +198,7 @@ root@3a453ab39d3d:/backend# cat /home/augustus/user.txt
 
 ```
 
-Si miramos donde estamos, nos daremos cuenta que estamos en un contenedor, asi que voy a ver que **IP** tiene conectividad este contenedor, dentro de su misma subred.
+Si miramos donde estamos, nos daremos cuenta de que estamos en un contenedor, así que voy a ver que **IP** tiene conectividad este contenedor, dentro de su misma subred, con un pequeño *one liner*.
 
 ```bash
 
@@ -222,7 +222,7 @@ Puerto: 45960 - OPEN
 
 ```
 
-Como la **172.19.0.1** tiene el puerto **22** abierto, vamos a probar a conectarnos con el usuario **augustus** y ver si han reutilizado la contraseña del panel de aminitracion que vimos anteriormente, introduciendole la contraseña de **superadministrator**.
+Como la **172.19.0.1** tiene el puerto **22** abierto, vamos a probar a conectarnos con el usuario **augustus** y ver si han reutilizado la contraseña del panel de administración que vimos anteriormente, introduciéndole la contraseña de **superadministrator**.
 
 
 ```bash
@@ -248,19 +248,17 @@ augustus@GoodGames:~$ hostname -I
 
 ```
 
-Y genial, se ve que han reutilizado credenciales, por lo que nos hemos conseguido loguear como **augustus**.
+Se ve que han reutilizado credenciales, por lo que hemos conseguido iniciar sesión como **augustus**.
 
 
 # Root
 
 
-En este punto ya que tenemos un contenedor **rooteado** podemos copia la `/bin/bash` al directorio de **augustus** y establecerle permisos **SUID**.
-
-Como ahora tenemos la **bash** con permisos **SUID** podemos realizar el comando **bash -p** y nos pondriamos como **root**.
+En este punto, ya que tenemos un contenedor **rooteado** , podemos copiar la `/bin/bash` al directorio de **augustus** y establecerle permisos **SUID** . Y como ahora tenemos la **bash** con permisos **SUID** podemos ejecutar el comando *bash -p* y nos pondríamos poner como **root**.
 
 ![](/assets/images/htb-writeup-GoodGames/bashroot.png)
 
-Es importante que lo hagamos copiando la `/bin/bash` del host **172.19.0.1**, ya que si no nos aparecera el siguiente error
+Es importante que lo hagamos copiando la `/bin/bash` del host **172.19.0.1**, ya que si no nos aparecerá el siguiente error.
 
 ![](/assets/images/htb-writeup-GoodGames/errorbash.png)
 
