@@ -16,6 +16,7 @@ tags:
     - SQL Injection
     - Hash Cracking
     - SSTI
+    - Password Guessing
     - Pivoting
 ---
 

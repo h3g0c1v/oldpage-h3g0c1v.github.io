@@ -1,7 +1,7 @@
 ---
 layout: single
 title: FriendZone - Hack The Box
-excerpt: "Ésta máquina me gusto bastante, porque los ataques de transferencia de zona son mis favoritos. Después de destriparos la máquina, voy a proceder a explicarosla.
+excerpt: "Ésta máquina me gusto bastante, ya que toca temas interesantes. Después de destriparos la máquina, voy a proceder a explicarosla.
 FriendZone es una máquina Linux con una dificultad en Hack de Box de Easy."
 date: 2021-9-10
 classes: wide
