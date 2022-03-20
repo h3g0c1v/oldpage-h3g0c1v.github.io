@@ -313,6 +313,9 @@ h3g0c1v@kali:~/htb/forest$ cat users.txt
 
 También podemos enumerar muchas más cosas, pero me interesan únicamente los usuarios que hemos conseguido.
 
+
+# ASREPRoast Attack
+
 Ahora que tenemos un fichero de usuarios válidos del dominio, voy a intentar realizar un **ASREPRoast Attack** , para intentar obtener el TGT de algún usuario que tenga la opción **UF_DONT_REQUIRE_PREAUTH** establecida, empleando la herramienta `GetNPUsers.py`.
 
 ![](/assets/images/htb-writeup-forest/asrep.png)
@@ -332,6 +335,8 @@ Perfecto, nos pone *Pwn3d!* por lo que podemos conectarnos por winrm, para ello 
 En este punto, podemos visualizar la flag que se encuentra en el directorio `C:\Users\svc-alfresco\Desktop\user.txt`.
 
 ![](/assets/images/htb-writeup-forest/usertxt.png)
+
+# Local Privilege Escalation
 
 Ya que estamos dentro de la máquina víctima, podemos recolectar información para con la herramienta **BloodHound** , ver una posible escalada de privilegios. Así que usaré **SharpHound** para recolectar la información, y para poder utilizarlo previamente lo tenemos que *importar*.
 
@@ -370,6 +375,8 @@ Después tendríamos que llamar a la función **Add-DomainObjectAcl** , por lo q
 Como hemos importado directamente la función, ya podríamos ejecutar el comando que nos decía el **BloodHound**.
 
 ![](/assets/images/htb-writeup-forest/add_domain_object_acl.png)
+
+# DCSync Attack
 
 Vale, una vez hecho esto, ahora deberíamos poder realizar un **DCSync Attack**, así que vamos a probarlo.
 
@@ -484,6 +491,9 @@ EXCH01$:aes128-cts-hmac-sha1-96:9ceffb340a70b055304c3cd0583edf4e
 EXCH01$:des-cbc-md5:8c45f44c16975129
 [*] Cleaning up... 
 ```
+
+
+# Root
 
 Ahí vemos todos los hashes de los usuarios del dominio. En este punto podremos coger el hash del usuario **Administrator** , y coger la parte NT, para realizar un **Path The Hash**, conectandonos a dicho usuario con ese hash.
 
