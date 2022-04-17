@@ -1,7 +1,7 @@
 ---
 layout: single
 title: Jerry - Hack The Box
-excerpt: "Ésta máquina es bastante facililla. Vamos a explotar un Tomcat aprovechandonos de un upload de la página, aunque primero necesitaremos credenciales válidas. Asá que vamos a ello."
+excerpt: "Esta máquina es bastante facililla. Vamos a explotar un Tomcat aprovechandonos de un upload de la página, aunque primero necesitaremos credenciales válidas. Asá que vamos a ello."
 date: 2021-09-14
 classes: wide
 header:
