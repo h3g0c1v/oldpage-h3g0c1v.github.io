@@ -216,9 +216,12 @@ Voy a montarme un servidor en *python3* para ver si me llega una posible petici�
 
 ![](/assets/images/htb-writeup-love/proofget.png)
 
-Vemos que nos llega la petición *GET* que hemos tramitado. Eso huele un poco mal, pero vamos a seguir haciendo pruebas.
+Vemos que nos llega la petición *GET* que hemos tramitado, pero, de momento, poco podemos hacer con esto.
 
 ![](/assets/images/htb-writeup-love/get.png)
+
+
+# Server Side Request Forgery (SSRF)
 
 Si miramos la página por el puerto **443** sin introducir los dominios, vemos que nos pone *Forbidden*, pero que pasa si intento ver el contenido desde el propio panel que hemos encontrado, para ver si es vulnerable a un posible *Server Side Request Forgery*
 
@@ -241,6 +244,9 @@ Si probamos las credenciales para conectarnos a **SMB** vemos que no podemos.
 [!] Authentication error on 10.10.10.239
 ```
 
+
+# Remote Code Execution (RCE)
+
 Volviendo al panel del *Voting System*, vimos que había algunas vulnerabilidades, pero en las mas jugosas necesitabamos de credenciales. Ahora que tenemos credenciales, vamos a volver a mirar y a ver cual puede ser funcional.
 
 ![](/assets/images/htb-writeup-love/searchSploit.png)
@@ -259,9 +265,15 @@ Ahora nos pondremos en escucha por el puerto indicado en el script (haciendo uso
 
 ![](/assets/images/htb-writeup-love/reverse.png)
 
+
+# Acceso a la Máquina Víctima (user.txt)
+
 Y estamos dentro. Ahora si nos vamos al directorio del usuario con pocos privilegios, podremos visualizar la flag.
 
 ![](/assets/images/htb-writeup-love/usertxt.png)
+
+
+# Abusing AlwaysInstallElevated
 
 Vamos a realizar un reconocimiento exaustivo del sistema, para ello utilizare **WinPEAS**, y cuando terminemos lo investigaremos a fondo a ver como podemos escalar privilegios.
 
@@ -277,7 +289,10 @@ Para exploitar esto, primero debemos de crear un payload malicioso que se encarg
 
 ![](/assets/images/htb-writeup-love/always.png)
 
-De esta forma si ahora nos lo compartimos a la máquina victima y lo instalamos haciendo uso de **msiexec**, vemos como si nos ponemos en escucha por el puerto indicado en el payload, nos va a entablar una reverse shell para ganar acceso a la máquina como **NT/AUTHORITY SYSTEM**.
+
+# NT AUTHORITY\SYSTEM (root.txt)
+
+De esta forma si ahora nos lo compartimos a la máquina victima y lo instalamos haciendo uso de **msiexec**, vemos como si nos ponemos en escucha por el puerto indicado en el payload, nos va a entablar una reverse shell para ganar acceso a la máquina como **NT AUTHORITY\SYSTEM**.
 
 ![](/assets/images/htb-writeup-love/nt.png)
 
