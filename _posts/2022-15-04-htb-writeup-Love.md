@@ -1,7 +1,7 @@
 ---
 layout: single
 title: Love - Hack The Box
-excerpt: ""
+excerpt: "Máquina bastante divertida con un simple SSRF a traves de la cual obtendremos unas credenciales que nos permitiran entablarnos una reverse shell a nuestra máquina, a traves de un exploit que permite la ejecución remota de comandos. Despues haremos uso de winPEAS.exe para analizar en busqueda de vulnerabilidades, donde encontraremos que está habilitada la variable AlwaysInstallElevated, la cual explotaremos para ganar acceso al sistema como nt authority\system"
 date: 2022-04-15
 classes: wide
 header: 
