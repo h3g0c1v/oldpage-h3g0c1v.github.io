@@ -2,7 +2,7 @@
 layout: single
 title: Validation - Hack The Box
 excerpt: "Máquina muy interesante, con la cual puedes practicar bastante SQL Injection. Tiene una dificultad de Easy por lo que no sera mucho problema hacerla."
-date: 2022-03-16
+date: 2022-03-15
 classes: wide
 header:
   teaser: /assets/images/htb-writeup-validation/validation_logo.png
