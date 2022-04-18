@@ -1,7 +1,7 @@
 ---
 layout: single
 title: Love - Hack The Box
-excerpt: "Máquina bastante divertida con un simple SSRF a traves de la cual obtendremos unas credenciales que nos permitiran entablarnos una reverse shell a nuestra máquina, a traves de un exploit que permite la ejecución remota de comandos. Despues encontraremos que está habilitada la variable AlwaysInstallElevated, la cual explotaremos para ganar acceso al sistema como nt authority\\system"
+excerpt: "Máquina bastante divertida con un simple SSRF a través de la cual obtendremos unas credenciales que nos permitirán entablarnos una reverse Shell a nuestra máquina, a través de un exploit que permite la ejecución remota de comandos. Después encontraremos que está habilitada la variable AlwaysInstallElevated, la cual explotaremos para ganar acceso al sistema como nt authority/system"
 date: 2022-04-15
 classes: wide
 header: 
@@ -170,17 +170,17 @@ Host script results:
 |_  System time: 2022-04-16T02:24:50-07:00
 ```
 
-Como veo que hay una página web por **HTTP** utilizaré la herramienta *whatweb* para ver un poco mas de información sobre ella.
+Como veo que hay una página web por **HTTP** utilizaré la herramienta *whatweb* para ver un poco más de información sobre ella.
 
 ```bash
 ❯ whatweb http://10.10.10.239
 http://10.10.10.239 [200 OK] Apache[2.4.46], Bootstrap, Cookies[PHPSESSID], Country[RESERVED][ZZ], HTML5, HTTPServer[Apache/2.4.46 (Win64) OpenSSL/1.1.1j PHP/7.3.27], IP[10.10.10.239], JQuery, OpenSSL[1.1.1j], PHP[7.3.27], PasswordField[password], Script, Title[Voting System using PHP], X-Powered-By[PHP/7.3.27], X-UA-Compatible[IE=edge]
 ```
-No nos dice mucha información, así que vamos a verla mas detalladamente desde el navegador.
+No nos dice mucha información, así que vamos a verla más detalladamente desde el navegador.
 
 ![](/assets/images/htb-writeup-love/votingSystem.png)
 
-Y vemos un panel de logueo. Si probamos a buscar vulnerabilidades sobre *Voting System*, vemos que hay unas cuantas.
+Y vemos un panel de registro. Si probamos a buscar vulnerabilidades sobre *Voting System*, vemos que hay unas cuantas.
 
 ![](/assets/images/htb-writeup-love/searchSploit.png)
 
@@ -231,11 +231,11 @@ No pasa nada, pero si nos volvemos al fichero `targeted`, veremos que hay otra p
 
 ![](/assets/images/htb-writeup-love/forbidden5000.png)
 
-Bien, y si probamos ahora con el campo del *File Security Checker*, mirar si podemos ver el contenido real de esa página..
+Bien, y si ahora probamos con el campo del *File Security Checker*, mirar si podemos ver el contenido real de esa página.
 
 ![](/assets/images/htb-writeup-love/creds.png)
 
-Y bueno, es vulnerable parece ser, asi que nos vamos a guardar las credenciales que hemos encontrado.
+Y bueno, parece ser que es vulnerable, así que nos vamos a guardar las credenciales que hemos encontrado.
 
 Si probamos las credenciales para conectarnos a **SMB** vemos que no podemos.
 
@@ -247,56 +247,57 @@ Si probamos las credenciales para conectarnos a **SMB** vemos que no podemos.
 
 # Remote Code Execution (RCE)
 
-Volviendo al panel del *Voting System*, vimos que había algunas vulnerabilidades, pero en las mas jugosas necesitabamos de credenciales. Ahora que tenemos credenciales, vamos a volver a mirar y a ver cual puede ser funcional.
+Volviendo al panel del *Voting System*, vimos que había algunas vulnerabilidades, pero en las más jugosas necesitábamos de credenciales. Ahora que tenemos credenciales, vamos a volver a mirar y a ver cuál puede ser funcional.
 
 ![](/assets/images/htb-writeup-love/searchSploit.png)
 
-Vemos que hay una vulnerabilidad que nos permite ejecutar comandos de forma remota (**RCE**) a través de la subida de un fichero, asi que vamos a probarlo.
+Vemos que hay una vulnerabilidad que nos permite ejecutar comandos de forma remota (**RCE**) a través de la subida de un fichero, así que vamos a probarlo.
 
 ![](/assets/images/htb-writeup-love/script.png)
 
 Tendremos que configurar el script con los correspondientes datos.
 
-Algo importante aquí es que si miramos el script en que ruta está intentando subir el fichero, vemos que lo está intentando hacer sobre `/votesystem/admin/loquesea`. Si miramos nuestra página veremos que no existe la direccion de *votesystem*, así que tendremos que eliminar dicha palabra para que pueda funcinar el exploit. El script debería de quedar de la siguiente forma adecuando los parametros a los suyos correspondientes.
+Algo importante aquí es que si miramos el script en que ruta está intentando subir el fichero, vemos que lo está intentando hacer sobre `/votesystem/admin/loquesea`. Si miramos nuestra página veremos que no existe la dirección de *votesystem*, así que tendremos que eliminar dicha palabra para que pueda funcionar 
+el exploit. El script debería de quedar de la siguiente manera adecuando los parámetros a los suyos correspondientes.
 
 ![](/assets/images/htb-writeup-love/rce.png)
 
-Ahora nos pondremos en escucha por el puerto indicado en el script (haciendo uso de **rlwrap** ya que es una máquina Windows) para que el exploit nos mande la *reverse shell*.
+Ahora, nos pondremos en escucha por el puerto indicado en el script (haciendo uso de **rlwrap** , ya que es una máquina Windows) para que el exploit nos mande la *reverse shell*.
 
 ![](/assets/images/htb-writeup-love/reverse.png)
 
 
 # Acceso a la Máquina Víctima (user.txt)
 
-Y estamos dentro. Ahora si nos vamos al directorio del usuario con pocos privilegios, podremos visualizar la flag.
+Y estamos dentro. Ahora, si nos vamos al directorio del usuario con pocos privilegios, podremos visualizar la flag.
 
 ![](/assets/images/htb-writeup-love/usertxt.png)
 
 
 # Abusing AlwaysInstallElevated
 
-Vamos a realizar un reconocimiento exaustivo del sistema, para ello utilizare **WinPEAS**, y cuando terminemos lo investigaremos a fondo a ver como podemos escalar privilegios.
+Vamos a realizar un reconocimiento exhaustivo del sistema, para ello utilizaré **WinPEAS**, y cuando terminemos lo investigaremos a fondo a ver como podemos escalar privilegios.
 
-Investigando lo que nos ha reportado el *WinPEAS* vemos que la variable **AlwaysInstallElevated** está activada, y con eso se puede tensar la cosa, ya que se puede exploitar para conseguir escalar privilegios.
+Investigando lo que nos ha reportado el *WinPEAS* vemos que la variable **AlwaysInstallElevated** está activada, y con eso se puede tensar la cosa, ya que se puede explotar para conseguir escalar privilegios.
 
 ![](/assets/images/htb-writeup-love/alwaysinstallelevated.png)
 
-Para asegurarnos que está activo podemos ejecutar los siguientes comandos y veremos que las dos variables estan habilitadas.
+Para asegurarnos que está activo podemos ejecutar los siguientes comandos y veremos que las dos variables están habilitadas.
 
 ![](/assets/images/htb-writeup-love/variables.png)
 
-Para exploitar esto, primero debemos de crear un payload malicioso que se encargue de entablarnos una reverse shell a nuestro equipo, y lo exportaremos en formato *.msi*.
+Para explotar esto, primero debemos de crear un payload malicioso que se encargue de entablarnos una reverse shell a nuestro equipo, y lo exportaremos en formato *.msi*.
 
 ![](/assets/images/htb-writeup-love/always.png)
 
 
 # NT AUTHORITY\SYSTEM (root.txt)
 
-De esta forma si ahora nos lo compartimos a la máquina victima y lo instalamos haciendo uso de **msiexec**, vemos como si nos ponemos en escucha por el puerto indicado en el payload, nos va a entablar una reverse shell para ganar acceso a la máquina como **NT AUTHORITY\SYSTEM**.
+De esta forma, si ahora nos lo compartimos a la máquina víctima y lo instalamos haciendo uso de **msiexec**, vemos como si nos ponemos en escucha por el puerto indicado en el payload, nos va a entablar una reverse shell para ganar acceso a la máquina como **NT AUTHORITY\SYSTEM**.
 
 ![](/assets/images/htb-writeup-love/nt.png)
 
-Ahora si nos vamos al directorio `C:\Users\Administrator\Desktop` podremos visualizar la flag de altos privilegios.
+Ahora, si nos vamos al directorio `C:\Users\Administrator\Desktop` podremos visualizar la flag de altos privilegios.
 
 ![](/assets/images/htb-writeup-love/roottxt.png)
 
