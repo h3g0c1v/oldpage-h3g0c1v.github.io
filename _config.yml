@@ -104,7 +104,7 @@ author:
   name             : "H3g0c1v"
   avatar           : "/assets/images/avatar.png"
   bio              : "Pentester, CTF Player"
-  location         : "Spain"
+  location         : "Somewhere"
   email            : "infoh3g0c1v@gmail.com"
   uri              :
   home             : # null (default), "absolute or relative url to link to author home"
@@ -126,7 +126,7 @@ author:
   stackoverflow    : # "123456/username" (the last part of your profile url, e.g. https://stackoverflow.com/users/123456/username)
   steam            : # "steamId" (the last part of your profile url, e.g. https://steamcommunity.com/id/steamId/)
   tumblr           :
-  twitter          : "h3g0c1v"
+  twitter          : # "h3g0c1v"
   vine             :
   weibo            :
   xing             :
